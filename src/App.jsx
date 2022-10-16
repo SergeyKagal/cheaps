@@ -1,39 +1,41 @@
 import { useEffect, useState, useRef } from 'react';
 import { getData } from './getData';
-import { Chip } from '@mui/material';
+import { Chip, Button } from '@mui/material';
 import './App.scss';
 
 function App() {
   const [tags, setTag] = useState([]);
   const [text, setText] = useState('');
   const [tagsToSend, setTagsToSend] = useState([]);
+  const [overflow, setOverflow] = useState(false);
+  const [tagCounter, setCounter] = useState(0);
 
-  const inputRef = useRef();
   const divRef = useRef();
-  // const ulRef = useRef();
-
-  // const [ulWidth, setUlWidth] = useState(0);
-  const [inputWidth, setInputWidth] = useState(0);
-  const [divWidth, setDivWidth] = useState(0);
+  const wrapperRef = useRef();
 
   const onChangeInput = (e) => {
     setText(e.target.value);
   };
 
   const resize = () => {
-    setDivWidth(divRef.current.getBoundingClientRect().width);
-    setInputWidth(inputRef.current.getBoundingClientRect().width);
+    const cheapsWidth = divRef.current.getBoundingClientRect().width;
+    const wrapperWidth = wrapperRef.current.getBoundingClientRect().width;
+
+    if (cheapsWidth / 0.6 > wrapperWidth) {
+      setOverflow(true);
+    } else {
+      setOverflow(false);
+      setCounter(tagsToSend.length);
+    }
   };
 
   useEffect(() => {
     resize();
-    console.log(divWidth, inputWidth);
   });
 
   const loadData = () => {
     if (!tags.length) {
       getData().then((responce) => {
-        console.log([...responce.data]);
         setTag(
           [...responce.data].map((e, i) => {
             return { id: `${i}${e}`, text: e, isClicked: false };
@@ -44,7 +46,6 @@ function App() {
   };
 
   const handleDelete = (id) => {
-    console.log(id);
     setTagsToSend([...tagsToSend].filter((e) => id !== e.id));
     setTag(
       [...tags].map((e) => {
@@ -64,7 +65,7 @@ function App() {
           return e;
         }
         if (!e.isClicked) {
-          res.push({ ...e, isClicked: true });
+          res.push({ ...e, isClicked: true, isOverflow: overflow });
           setTagsToSend(res);
         }
         return { ...e, isClicked: true };
@@ -75,19 +76,29 @@ function App() {
   const addTag = (e) => {
     const res = tagsToSend;
     if (e.key === 'Enter' && text.length) {
-      console.log(text);
-      res.push({ id: `${res.length}${text}`, text: text, isClicked: true });
+      res.push({
+        id: `${res.length}${text}`,
+        text: text,
+        isClicked: true,
+        isOverflow: overflow,
+      });
       setTagsToSend(res);
       setText('');
     }
   };
 
+  const sendData = () => {
+    // data sending process =>
+    setTagsToSend([]);
+    setTag([]);
+  };
+
   return (
     <>
-      <div className="block1" onFocus={loadData}>
-        <div ref={divRef}>
-          {tagsToSend.map((e) => {
-            return e.isClicked ? (
+      <div className="block1" onClick={loadData} ref={wrapperRef}>
+        <div ref={divRef} className="cheapsWrapper">
+          {tagsToSend.map((e, i) => {
+            return i < tagCounter ? (
               <Chip
                 key={e.id}
                 label={e.text}
@@ -95,18 +106,20 @@ function App() {
               />
             ) : null;
           })}
+          {!!tagsToSend.length && overflow && (
+            <Chip label={`+${tagsToSend.length}...`} />
+          )}
         </div>
 
         <input
           type="text"
           name=""
           id="txt"
-          placeholder="Press enter to add tag"
+          placeholder={!tagsToSend.length ? 'Select categories' : null}
           onChange={(e) => onChangeInput(e)}
           className="myInput"
           onKeyUp={(e) => addTag(e)}
           value={text}
-          ref={inputRef}
           autoComplete="off"
         />
       </div>
@@ -123,6 +136,13 @@ function App() {
           );
         })}
       </ul>
+      {!!tagsToSend.length && (
+        <div className="buttonWrapper">
+          <Button variant="contained" onClick={sendData}>
+            send to db
+          </Button>
+        </div>
+      )}
     </>
   );
 }

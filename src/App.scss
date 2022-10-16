@@ -1,18 +1,26 @@
 .block1 {
-  border: 1px solid black;
+  border: 1px solid #62e7dc;
   width: 80%;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin: 2em auto;
+}
+.cheapsWrapper {
+  max-width: 80%;
+  height: 100%;
+
+  display: flex;
+  justify-content: flex-end;
+  padding: 2px;
 }
 .myInput {
   border: none;
   height: 2rem;
+  padding-left: 5px;
+  width: 110px;
 }
 .myInput:active,
 .myInput:focus {
-  border: none;
-  color: red;
   outline: 0;
 }
 
@@ -40,4 +48,10 @@ li {
     position: absolute;
     right: 12px;
   }
+}
+.buttonWrapper {
+  text-align: center;
+  margin-top: 80px;
+  margin-left: auto;
+  margin-right: auto;
 }
