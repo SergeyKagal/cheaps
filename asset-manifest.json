@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/cheaps/static/css/main.2bc04d84.css",
+    "main.js": "/cheaps/static/js/main.3032764a.js",
+    "index.html": "/cheaps/index.html",
+    "main.2bc04d84.css.map": "/cheaps/static/css/main.2bc04d84.css.map",
+    "main.3032764a.js.map": "/cheaps/static/js/main.3032764a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2bc04d84.css",
+    "static/js/main.3032764a.js"
+  ]
+}
