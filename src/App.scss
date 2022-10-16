@@ -18,6 +18,9 @@
   height: 2rem;
   padding-left: 5px;
   width: 110px;
+  &::placeholder {
+    color: #999999;
+  }
 }
 .myInput:active,
 .myInput:focus {
@@ -51,7 +54,20 @@ li {
 }
 .buttonWrapper {
   text-align: center;
-  margin-top: 80px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 50px auto;
+}
+
+@media (max-width: 370px) {
+  .block1 {
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin: 2em auto;
+  }
+  .cheapsWrapper {
+    flex-direction: column;
+    padding: 2px;
+  }
+  .cheap {
+    width: fit-content;
+  }
 }

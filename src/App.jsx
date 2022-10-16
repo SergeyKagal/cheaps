@@ -21,10 +21,14 @@ function App() {
     const cheapsWidth = divRef.current.getBoundingClientRect().width;
     const wrapperWidth = wrapperRef.current.getBoundingClientRect().width;
 
-    if (cheapsWidth / 0.6 > wrapperWidth) {
-      setOverflow(true);
+    if (wrapperWidth > 290) {
+      if (cheapsWidth / 0.6 > wrapperWidth) {
+        setOverflow(true);
+      } else {
+        setOverflow(false);
+        setCounter(tagsToSend.length);
+      }
     } else {
-      setOverflow(false);
       setCounter(tagsToSend.length);
     }
   };
@@ -100,6 +104,7 @@ function App() {
           {tagsToSend.map((e, i) => {
             return i < tagCounter ? (
               <Chip
+                className="cheap"
                 key={e.id}
                 label={e.text}
                 onDelete={() => handleDelete(e.id)}
@@ -115,7 +120,9 @@ function App() {
           type="text"
           name=""
           id="txt"
-          placeholder={!tagsToSend.length ? 'Select categories' : null}
+          placeholder={
+            !tagsToSend.length ? 'Select categories' : 'Enter tag here'
+          }
           onChange={(e) => onChangeInput(e)}
           className="myInput"
           onKeyUp={(e) => addTag(e)}
