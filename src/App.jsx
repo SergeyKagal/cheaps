@@ -30,18 +30,31 @@ function App() {
     console.log(divWidth, inputWidth);
   });
 
-  useEffect(() => {
-    getData().then((responce) => {
-      console.log([...responce.data]);
-      setTag(
-        [...responce.data].map((e, i) => {
-          return { id: `${i}${e}`, text: e, isClicked: false };
-        })
-      );
-    });
-  }, []);
+  const loadData = () => {
+    if (!tags.length) {
+      getData().then((responce) => {
+        console.log([...responce.data]);
+        setTag(
+          [...responce.data].map((e, i) => {
+            return { id: `${i}${e}`, text: e, isClicked: false };
+          })
+        );
+      });
+    }
+  };
 
-  const handleDelete = () => {};
+  const handleDelete = (id) => {
+    console.log(id);
+    setTagsToSend([...tagsToSend].filter((e) => id !== e.id));
+    setTag(
+      [...tags].map((e) => {
+        if (id === e.id) {
+          return { ...e, isClicked: false };
+        }
+        return e;
+      })
+    );
+  };
 
   const onLiClick = (id) => {
     const res = tagsToSend;
@@ -50,8 +63,10 @@ function App() {
         if (id !== e.id) {
           return e;
         }
-        res.push({ ...e, isClicked: true });
-        setTagsToSend(res);
+        if (!e.isClicked) {
+          res.push({ ...e, isClicked: true });
+          setTagsToSend(res);
+        }
         return { ...e, isClicked: true };
       })
     );
@@ -69,11 +84,15 @@ function App() {
 
   return (
     <>
-      <div className="block1">
+      <div className="block1" onFocus={loadData}>
         <div ref={divRef}>
           {tagsToSend.map((e) => {
             return e.isClicked ? (
-              <Chip key={e.id} label={e.text} onDelete={handleDelete} />
+              <Chip
+                key={e.id}
+                label={e.text}
+                onDelete={() => handleDelete(e.id)}
+              />
             ) : null;
           })}
         </div>
@@ -88,6 +107,7 @@ function App() {
           onKeyUp={(e) => addTag(e)}
           value={text}
           ref={inputRef}
+          autoComplete="off"
         />
       </div>
       <ul>
